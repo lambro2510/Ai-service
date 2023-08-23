@@ -26,5 +26,5 @@ public class LanguageDataTraining {
   private TextStatus status;
 
   @Field("percent")
-  private Integer percent;
+  private Double percent;
 }

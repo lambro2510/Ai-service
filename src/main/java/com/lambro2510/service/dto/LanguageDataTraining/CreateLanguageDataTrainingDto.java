@@ -10,5 +10,5 @@ public class CreateLanguageDataTrainingDto {
 
   TextStatus status;
 
-  Integer percent;
+  Double percent;
 }

@@ -1,6 +1,7 @@
 package com.lambro2510.service.controller;
 
 import com.lambro2510.service.dto.LanguageDataTraining.CreateLanguageDataTrainingDto;
+import com.lambro2510.service.response.LanguageDataResponse;
 import com.lambro2510.service.service.DataTrainingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,11 @@ public class LanguageDataTrainingController {
   public ResponseEntity<Boolean> createData(@RequestBody List<CreateLanguageDataTrainingDto> dto){
     dataTrainingService.createLanguageDataTraining(dto);
     return ResponseEntity.ok(true);
+  }
+
+  @GetMapping("")
+  public ResponseEntity<LanguageDataResponse> getStatusOfText(@RequestParam String text){
+    return ResponseEntity.ok(dataTrainingService.getStatusOfText(text));
   }
 
 }
