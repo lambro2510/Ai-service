@@ -8,6 +8,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class LanguageDataResponse {
   TextStatus status;
-
+  String description;
   double percent;
 }

@@ -81,7 +81,7 @@ public class LanguageAiComponent {
       }
     }
     textStatus = Arrays.stream(TextStatus.values()).filter(data -> data.toString().equals(status)).toList().get(0);
-    return new LanguageDataResponse(textStatus, percent);
+    return new LanguageDataResponse(textStatus,textStatus.getDescription(), percent);
   }
 
 }
