@@ -36,6 +36,7 @@ public class DataTrainingService extends BaseService{
   public LanguageDataResponse getStatusOfText(String text) {
     LanguageDataResponse data = languageAiComponent.getStatus(text);
     LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
+    languageDataTrainingRepository.save(dataTraining);
     return data;
   }
 }
