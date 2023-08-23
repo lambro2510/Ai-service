@@ -1,0 +1,32 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+  jackson:
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  application:
+    name: salespage-service
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb+srv://lam:12345@db-salespage.h9186rq.mongodb.net/db-salespage}
+  aop:
+    proxy-target-class: true
+  main:
+    allow-bean-definition-overriding: true
+  springdoc:
+    swagger-ui:
+      path:/swagger-ui.html
+debug: ${DEBUG:debug}
+logging:
+  config: classpath:log.xml
+  level:
+    org.springframework.data.mongodb.core.MongoTemplate: DEBUG
+
+server:
+  port: ${PORT:8080}
+
