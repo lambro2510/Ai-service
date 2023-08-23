@@ -1,7 +1,14 @@
 package com.lambro2510.service.entity.types;
 
 public enum TextStatus {
+  EXCELLENT,
   GOOD,
-  BAD,
-  NORMAL
+  AVERAGE,
+  POOR,
+  VERY_POOR,
+  OUTSTANDING,
+  BELOW_AVERAGE,
+  SUPERB,
+  MEDIOCRE,
+  IMPRESSIVE
 }
