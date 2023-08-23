@@ -1,0 +1,12 @@
+name: auto deploy Ai service
+
+on:
+  push:
+    branches: [ "master" ]  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest  
+    steps:
+      - name: auto deploy
+        run: curl -X POST ${{ secrets.AI_WEBHOOK_URL }}
