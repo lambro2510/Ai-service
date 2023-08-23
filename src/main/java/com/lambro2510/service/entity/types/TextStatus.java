@@ -5,6 +5,7 @@ public enum TextStatus {
   GOOD,
   AVERAGE,
   POOR,
+  BAD,
   VERY_POOR,
   OUTSTANDING,
   BELOW_AVERAGE,
