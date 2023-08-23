@@ -42,21 +42,15 @@ public class LanguageAiComponent {
   @Bean
   public DocumentCategorizerME createModule() throws IOException {
     List<DocumentSample> documentSamples = new ArrayList<>();
-//    for(TextStatus status : TextStatus.values()){
-//      List<LanguageDataTraining> goodStatusData = dataTrainings.stream().filter(data -> data.getStatus().equals(status)).toList();
-//      String[] text = goodStatusData.stream()
-//          .map(LanguageDataTraining::getText)
-//          .toArray(String[]::new);
-//      String category = status.toString(); // Sử dụng trạng thái làm nhãn
-//      DocumentSample sample = new DocumentSample(category, text);
-//      documentSamples.add(sample);
-//    }
 
     for (LanguageDataTraining dataTraining : dataTrainings) {
       String[] text = dataTraining.getText().replaceAll("[., ]", "").split("");
       String category = dataTraining.getStatus().toString();
       DocumentSample sample = new DocumentSample(category, text);
       documentSamples.add(sample);
+    }
+    if(dataTrainings.isEmpty()){
+      return null;
     }
     // Tạo đối tượng ObjectStream từ dữ liệu huấn luyện
     ObjectStream<DocumentSample> sampleStream = ObjectStreamUtils.createObjectStream(documentSamples);
