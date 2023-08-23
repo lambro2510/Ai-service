@@ -4,18 +4,13 @@ import lombok.Getter;
 
 @Getter
 public enum TextStatus {
-  EXCELLENT("Xuất sắc"),
-  GOOD("Tốt"),
+  GREAT("Tuyệt vời"),
   VERY_GOOD("Rất tốt"),
-  AVERAGE("Trung bình"),
-  POOR("Yếu"),
-  BAD("Kém"),
-  VERY_POOR("Rất kém"),
-  OUTSTANDING("Nổi bật"),
-  BELOW_AVERAGE("Dưới trung bình"),
-  SUPERB("Tuyệt vời"),
-  MEDIOCRE("Bình thường"),
-  IMPRESSIVE("ấn tượng");
+  GOOD("Tốt"),
+  PRETTY_GOOD("Khá tốt"),
+  NORMAL("Bình thường"),
+  POOR("Kém"),
+  VERY_POOR("Rất kém");
 
   private final String description;
 
@@ -23,7 +18,4 @@ public enum TextStatus {
     this.description = description;
   }
 
-  public String getDescription() {
-    return description;
-  }
 }
