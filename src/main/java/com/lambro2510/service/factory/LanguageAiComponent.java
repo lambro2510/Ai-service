@@ -33,15 +33,18 @@ public class LanguageAiComponent {
   @Autowired
   @Lazy
   DocumentCategorizerME documentCategorizerME;
-  List<LanguageDataTraining> dataTrainings = new ArrayList<>();
-
-  @PostConstruct
-  public void init() {
-    dataTrainings = dataTrainingService.getAllTrainingData();
-  }
 
   @Bean
+  public DocumentCategorizerME initModule() throws IOException {
+    return createModule();
+  }
+
+  public void updateModule() throws IOException {
+    documentCategorizerME = createModule();
+  }
+
   public DocumentCategorizerME createModule() throws IOException {
+    List<LanguageDataTraining> dataTrainings = dataTrainingService.getAllTrainingData();
     List<DocumentSample> documentSamples = new ArrayList<>();
 
     for (LanguageDataTraining dataTraining : dataTrainings) {
