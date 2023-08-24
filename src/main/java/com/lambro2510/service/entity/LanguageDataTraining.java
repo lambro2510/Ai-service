@@ -1,5 +1,6 @@
 package com.lambro2510.service.entity;
 
+import com.lambro2510.service.Utils.DateUtils;
 import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
 import lombok.AllArgsConstructor;
@@ -31,4 +32,7 @@ public class LanguageDataTraining {
 
   @Field("accurate")
   private TextAccurate accurate;
+
+  @Field("created_at")
+  private Long createdAt = DateUtils.getNow();
 }

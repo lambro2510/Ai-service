@@ -1,5 +1,6 @@
 package com.lambro2510.service.service;
 
+import com.lambro2510.service.Utils.DateUtils;
 import com.lambro2510.service.Utils.Helper;
 import com.lambro2510.service.dto.LanguageDataTraining.CreateLanguageDataTrainingDto;
 import com.lambro2510.service.entity.LanguageDataTraining;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -32,6 +34,7 @@ public class DataTrainingService extends BaseService{
         .text(text)
         .status(status)
         .percent(percent)
+        .createdAt(DateUtils.getNow())
         .build();
   }
 
@@ -57,6 +60,7 @@ public class DataTrainingService extends BaseService{
     List<LanguageDataTraining> dataTrainings =  languageDataTrainingRepository.findAll();
     for(LanguageDataTraining dataTraining : dataTrainings){
       dataTraining.setPercent(1D);
+      dataTraining.setCreatedAt(DateUtils.getNow());
     }
     languageDataTrainingRepository.saveAll(dataTrainings);
   }
@@ -67,6 +71,36 @@ public class DataTrainingService extends BaseService{
       checkTextAccurate(dataTraining);
     }
     languageDataTrainingRepository.saveAll(dataTrainings);
+  }
+
+  public void clearDuplicateData() {
+    List<LanguageDataTraining> dataTrainings = languageDataTrainingRepository.findAll();
+
+    for (LanguageDataTraining dataTraining : dataTrainings) {
+      List<LanguageDataTraining> trainings = languageDataTrainingRepository.findByText(dataTraining.getText());
+
+      if (trainings.size() > 1) {
+        LanguageDataTraining newestData = trainings.get(0);
+        List<LanguageDataTraining> dataToDelete = new ArrayList<>();
+
+        // Tìm bản ghi mới nhất trong các bản ghi trùng lặp
+        for (LanguageDataTraining oldData : trainings) {
+          if (oldData.getCreatedAt() > newestData.getCreatedAt()) {
+            newestData = oldData;
+          }
+        }
+
+        // Thêm các bản ghi cần xóa vào danh sách
+        for (LanguageDataTraining oldData : trainings) {
+          if (!oldData.getId().equals(newestData.getId())) {
+            dataToDelete.add(oldData);
+          }
+        }
+
+        // Xóa các bản ghi trùng lặp
+        languageDataTrainingRepository.deleteAll(dataToDelete);
+      }
+    }
   }
 
   public void checkTextAccurate(LanguageDataTraining dataTraining){

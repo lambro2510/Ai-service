@@ -32,6 +32,12 @@ public class LanguageDataTrainingController {
     return ResponseEntity.ok(true);
   }
 
+  @PostMapping("clean")
+  public ResponseEntity<Boolean> cleanData(){
+    dataTrainingService.clearDuplicateData();
+    return ResponseEntity.ok(true);
+  }
+
   @GetMapping("")
   public ResponseEntity<LanguageDataResponse> getStatusOfText(@RequestParam String text){
     return ResponseEntity.ok(dataTrainingService.getStatusOfText(text));
