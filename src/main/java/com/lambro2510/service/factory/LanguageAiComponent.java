@@ -85,7 +85,7 @@ public class LanguageAiComponent {
     }
     log.info("Outcome: {{}}", outcomes);
     textStatus = Arrays.stream(TextStatus.values()).filter(data -> data.toString().equals(status)).toList().get(0);
-    return new LanguageDataResponse(textStatus,textStatus.getDescription(), percent, Helper.isMaxValueDoubled(outcomes));
+    return new LanguageDataResponse(textStatus,textStatus.getDescription(), percent, Helper.isMaxValueDoubled(outcomes, 0.7));
   }
 
 }

@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Helper {
-  public static boolean isMaxValueDoubled(double[] outcomes) {
+  public static boolean isMaxValueDoubled(double[] outcomes, Double percent) {
     if (outcomes == null || outcomes.length == 0) {
       return false;
     }
 
-    double max = Double.MIN_VALUE;
+    double max = Double.NEGATIVE_INFINITY; // Sử dụng Double.NEGATIVE_INFINITY để đảm bảo rằng max có giá trị thấp nhất ban đầu
 
     for (double value : outcomes) {
       if (value > max) {
@@ -18,7 +18,7 @@ public class Helper {
     }
 
     for (double value : outcomes) {
-      if (value != max && value * 2 <= max) {
+      if (value != max && value <= max * percent) { // Kiểm tra xem giá trị có lớn hơn hoặc bằng 70% giá trị lớn nhất hay không
         return false;
       }
     }
@@ -37,5 +37,5 @@ public class Helper {
     }
     return sentences;
   }
-  
+
 }
