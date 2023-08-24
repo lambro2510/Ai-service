@@ -40,7 +40,7 @@ public class DataTrainingService extends BaseService{
 
   public LanguageDataResponse getStatusOfText(String text) {
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-    if(data.isCorrect()){
+    if(data.isCorrect() || data.getPercent() > 0.5){
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
       languageDataTrainingRepository.save(dataTraining);
     }
