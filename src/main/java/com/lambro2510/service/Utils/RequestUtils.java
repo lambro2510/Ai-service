@@ -42,7 +42,7 @@ public class RequestUtils {
     String requestUrl = SHOPPEE_URL + "/v2/item/get_ratings" +
         "?itemid=" + itemId +
         "&shopid=" + shopId +
-        "&limit=" + "100" +
+        "&limit=" + "50" +
         "&offset=" + offset.toString();
     return request(requestUrl, ShoppeeRatingData.class, null, HttpMethod.GET);
   }
