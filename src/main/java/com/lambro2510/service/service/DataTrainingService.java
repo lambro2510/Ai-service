@@ -47,6 +47,7 @@ public class DataTrainingService extends BaseService{
 
   public void trainingSubText(String text){
     List<String> subTexts = Helper.splitTextIntoSentences(text);
+    if(subTexts.size() == 1) return;
     for(String subText : subTexts){
       getStatusOfText(subText);
     }
