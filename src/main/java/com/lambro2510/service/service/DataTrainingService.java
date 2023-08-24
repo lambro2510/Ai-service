@@ -2,18 +2,23 @@ package com.lambro2510.service.service;
 
 import com.lambro2510.service.Utils.DateUtils;
 import com.lambro2510.service.Utils.Helper;
+import com.lambro2510.service.Utils.RequestUtils;
 import com.lambro2510.service.dto.LanguageDataTraining.CreateLanguageDataTrainingDto;
 import com.lambro2510.service.entity.LanguageDataTraining;
 import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
 import com.lambro2510.service.factory.LanguageAiComponent;
+import com.lambro2510.service.response.ApiResponse.ShopeeItemResponse;
+import com.lambro2510.service.response.ApiResponse.ShoppeeRatingData;
 import com.lambro2510.service.response.LanguageDataResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DataTrainingService extends BaseService{
@@ -131,9 +136,46 @@ public class DataTrainingService extends BaseService{
   }
 
   public void autoTraining() {
-    List<LanguageDataTraining> dataTrainings =  languageDataTrainingRepository.findAll();
-    for(LanguageDataTraining dataTraining : dataTrainings){
-      getStatusOfText(dataTraining.getText());
+    getFeed(0);
+  }
+
+  public void getFeed(int offset){
+    ShopeeItemResponse shoppeeItems = RequestUtils.getShoppeeItem(offset);
+
+    if(shoppeeItems.getData().getFeeds() == null ||shoppeeItems.getData().getFeeds().isEmpty() ){
+      return;
     }
+
+    for(ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()){
+      getRating(feed, 0);
+    }
+    getFeed(++offset);
+  }
+
+  public void getRating(ShopeeItemResponse.Feed feed, int offset){
+    ShoppeeRatingData shoppeeRatingData = RequestUtils.getRatingData(feed.getItemCard().getItem().getItemid(),feed.getItemCard().getItem().getShopid(), offset);
+
+    if(shoppeeRatingData.getData().getRatings() == null || shoppeeRatingData.getData().getRatings().isEmpty()){
+      return;
+    }
+    for(ShoppeeRatingData.RatingData.Rating rating : shoppeeRatingData.getData().getRatings()){
+      String comment = rating.getComment();
+      TextStatus status = getStatus(rating.getRatingStar());
+      LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
+      languageDataTrainingRepository.save(languageDataTraining);
+    }
+    getRating(feed, ++offset);
+  }
+
+  public TextStatus getStatus(Integer star){
+    Map<Integer, TextStatus> statusMap = new HashMap<>();
+    statusMap.put(1, TextStatus.VERY_POOR);
+    statusMap.put(2, TextStatus.POOR);
+    statusMap.put(3, TextStatus.NORMAL);
+    statusMap.put(4, TextStatus.GOOD);
+    statusMap.put(5, TextStatus.VERY_GOOD);
+    TextStatus status = statusMap.get(star);
+    if (status == null) throw new RuntimeException("Error");
+    return status;
   }
 }

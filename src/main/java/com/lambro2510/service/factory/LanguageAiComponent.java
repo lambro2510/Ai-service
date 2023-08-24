@@ -55,7 +55,7 @@ public class LanguageAiComponent {
       DocumentSample sample = new DocumentSample(category, text, extraInformation);
       documentSamples.add(sample);
     }
-    if(dataTrainings.isEmpty()){
+    if(dataTrainings.size() < 100){
       return null;
     }
     // Tạo đối tượng ObjectStream từ dữ liệu huấn luyện
