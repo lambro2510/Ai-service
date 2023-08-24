@@ -1,5 +1,6 @@
 package com.lambro2510.service.service;
 
+import com.lambro2510.service.Utils.Helper;
 import com.lambro2510.service.dto.LanguageDataTraining.CreateLanguageDataTrainingDto;
 import com.lambro2510.service.entity.LanguageDataTraining;
 import com.lambro2510.service.entity.types.TextAccurate;
@@ -40,7 +41,15 @@ public class DataTrainingService extends BaseService{
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
       languageDataTrainingRepository.save(dataTraining);
     }
+    trainingSubText(text);
     return data;
+  }
+
+  public void trainingSubText(String text){
+    List<String> subTexts = Helper.splitTextIntoSentences(text);
+    for(String subText : subTexts){
+      getStatusOfText(subText);
+    }
   }
 
   public void updateTrainingData() {
