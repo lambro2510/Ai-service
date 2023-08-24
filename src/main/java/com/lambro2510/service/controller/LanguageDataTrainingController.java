@@ -21,8 +21,14 @@ public class LanguageDataTrainingController {
   }
 
   @PostMapping("update-percent")
-  public ResponseEntity<Boolean> udpatePercent(){
+  public ResponseEntity<Boolean> updatePercent(){
     dataTrainingService.updateTrainingData();
+    return ResponseEntity.ok(true);
+  }
+
+  @PostMapping("update-accurate")
+  public ResponseEntity<Boolean> updateAccurate(){
+    dataTrainingService.updateAccurateTrainingData();
     return ResponseEntity.ok(true);
   }
 

@@ -1,5 +1,6 @@
 package com.lambro2510.service.entity;
 
+import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,4 +28,7 @@ public class LanguageDataTraining {
 
   @Field("percent")
   private Double percent;
+
+  @Field("accurate")
+  private TextAccurate accurate;
 }

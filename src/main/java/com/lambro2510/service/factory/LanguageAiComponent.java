@@ -1,10 +1,12 @@
 package com.lambro2510.service.factory;
 
+import com.lambro2510.service.Utils.Helper;
 import com.lambro2510.service.entity.LanguageDataTraining;
 import com.lambro2510.service.entity.types.TextStatus;
 import com.lambro2510.service.response.LanguageDataResponse;
 import com.lambro2510.service.service.DataTrainingService;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.log4j.Log4j2;
 import opennlp.tools.doccat.DoccatFactory;
 import opennlp.tools.doccat.DoccatModel;
 import opennlp.tools.doccat.DocumentCategorizerME;
@@ -18,11 +20,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 @Component
+@Log4j2
 public class LanguageAiComponent {
 
   @Autowired
@@ -44,9 +45,11 @@ public class LanguageAiComponent {
     List<DocumentSample> documentSamples = new ArrayList<>();
 
     for (LanguageDataTraining dataTraining : dataTrainings) {
-      String[] text = dataTraining.getText().replaceAll("[., ]", "").split("");
+      String[] text = dataTraining.getText().split("");
       String category = dataTraining.getStatus().toString();
-      DocumentSample sample = new DocumentSample(category, text);
+      Map<String, Object> extraInformation = new HashMap<>();
+      extraInformation.put("percent", dataTraining.getPercent());
+      DocumentSample sample = new DocumentSample(category, text, extraInformation);
       documentSamples.add(sample);
     }
     if(dataTrainings.isEmpty()){
@@ -70,7 +73,7 @@ public class LanguageAiComponent {
 
 
   public LanguageDataResponse getStatus(String inputData) {
-    String[] text = inputData.replaceAll("[., ]", "").split("");
+    String[] text = inputData.split("");
     double[] outcomes = documentCategorizerME.categorize(text);
     String status = documentCategorizerME.getBestCategory(outcomes);
     double percent = 0;
@@ -80,8 +83,9 @@ public class LanguageAiComponent {
         percent = v;
       }
     }
+    log.info("Outcome: {{}}", outcomes);
     textStatus = Arrays.stream(TextStatus.values()).filter(data -> data.toString().equals(status)).toList().get(0);
-    return new LanguageDataResponse(textStatus,textStatus.getDescription(), percent);
+    return new LanguageDataResponse(textStatus,textStatus.getDescription(), percent, Helper.isMaxValueDoubled(outcomes));
   }
 
 }

@@ -10,4 +10,5 @@ public class LanguageDataResponse {
   TextStatus status;
   String description;
   double percent;
+  boolean isCorrect;
 }
