@@ -20,6 +20,12 @@ public class LanguageDataTrainingController {
     return ResponseEntity.ok(true);
   }
 
+  @PostMapping("update-percent")
+  public ResponseEntity<Boolean> udpatePercent(){
+    dataTrainingService.updateTrainingData();
+    return ResponseEntity.ok(true);
+  }
+
   @GetMapping("")
   public ResponseEntity<LanguageDataResponse> getStatusOfText(@RequestParam String text){
     return ResponseEntity.ok(dataTrainingService.getStatusOfText(text));

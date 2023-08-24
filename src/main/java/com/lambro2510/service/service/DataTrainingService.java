@@ -39,4 +39,12 @@ public class DataTrainingService extends BaseService{
     languageDataTrainingRepository.save(dataTraining);
     return data;
   }
+
+  public void updateTrainingData() {
+    List<LanguageDataTraining> dataTrainings =  languageDataTrainingRepository.findAll();
+    for(LanguageDataTraining dataTraining : dataTrainings){
+      dataTraining.setPercent(1D);
+    }
+    languageDataTrainingRepository.saveAll(dataTrainings);
+  }
 }
