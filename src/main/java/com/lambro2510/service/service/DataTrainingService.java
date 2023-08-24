@@ -129,4 +129,11 @@ public class DataTrainingService extends BaseService{
       dataTraining.setAccurate(TextAccurate.PER0);
     }
   }
+
+  public void autoTraining() {
+    List<LanguageDataTraining> dataTrainings =  languageDataTrainingRepository.findAll();
+    for(LanguageDataTraining dataTraining : dataTrainings){
+      getStatusOfText(dataTraining.getText());
+    }
+  }
 }

@@ -23,4 +23,9 @@ public class LanguageSchedule {
   public void updateModule() throws IOException {
     languageAiComponent.updateModule();
   }
+
+  @Scheduled( fixedRate = 300000)
+  public void autoTraining() throws IOException {
+    dataTrainingService.autoTraining();
+  }
 }
