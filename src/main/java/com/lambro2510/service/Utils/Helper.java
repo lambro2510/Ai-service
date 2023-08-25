@@ -11,20 +11,20 @@ public class Helper {
     }
 
     for (int value = 0 ; value < outcomes.length; value ++) {
-      if(value == 0 || value == 1 || value == 2){
-        if(outcomes[value] > outcomes[3] * percent || outcomes[value] > outcomes[4] * percent || outcomes[value] > outcomes[5] * percent || outcomes[value] > outcomes[6] * percent){
+      if(value == 0 || value == 1){
+        if(outcomes[value] > outcomes[2] * percent || outcomes[value] > outcomes[3] * percent || outcomes[value] > outcomes[4] * percent){
+          return true;
+        }
+      }
+
+      if(value == 2 ){
+        if(outcomes[value] > outcomes[0] * percent || outcomes[value] > outcomes[1] * percent || outcomes[value] > outcomes[3] * percent || outcomes[value] > outcomes[4] * percent){
           return true;
         }
       }
 
       if(value == 3 || value == 4){
-        if(outcomes[value] > outcomes[0] * percent || outcomes[value] > outcomes[1] * percent || outcomes[value] > outcomes[2] * percent || outcomes[value] > outcomes[5] * percent || outcomes[value] > outcomes[6] * percent){
-          return true;
-        }
-      }
-
-      if(value == 5 || value == 6){
-        if(outcomes[value] > outcomes[0] * percent || outcomes[value] > outcomes[1] * percent || outcomes[value] > outcomes[2] * percent || outcomes[value] > outcomes[3] * percent || outcomes[value] > outcomes[4] * percent){
+        if(outcomes[value] > outcomes[0] * percent || outcomes[value] > outcomes[1] * percent || outcomes[value] > outcomes[2] * percent || outcomes[value] > outcomes[3] * percent){
           return true;
         }
       }
