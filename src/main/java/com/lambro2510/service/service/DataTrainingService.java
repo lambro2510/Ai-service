@@ -12,6 +12,7 @@ import com.lambro2510.service.factory.LanguageAiComponent;
 import com.lambro2510.service.response.ApiResponse.ShopeeItemResponse;
 import com.lambro2510.service.response.ApiResponse.ShoppeeRatingData;
 import com.lambro2510.service.response.LanguageDataResponse;
+import com.mongodb.MongoWriteException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,8 +40,12 @@ public class DataTrainingService extends BaseService {
 
   public void createLanguageDataTraining(List<CreateLanguageDataTrainingDto> dto) {
     for (CreateLanguageDataTrainingDto trainingDto : dto) {
-      LanguageDataTraining dataTraining = createData(trainingDto.getText(), trainingDto.getStatus(), trainingDto.getPercent(), trainingDto.getType(), trainingDto.getTone());
-      languageDataTrainingRepository.save(dataTraining);
+      try{
+        LanguageDataTraining dataTraining = createData(trainingDto.getText(), trainingDto.getStatus(), trainingDto.getPercent(), trainingDto.getType(), trainingDto.getTone());
+        languageDataTrainingRepository.save(dataTraining);
+      }catch (MongoWriteException ex){
+        log.error(ex.getMessage());
+      }
     }
   }
 
