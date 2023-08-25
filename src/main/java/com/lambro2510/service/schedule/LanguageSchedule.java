@@ -14,10 +14,6 @@ public class LanguageSchedule {
   DataTrainingService dataTrainingService;
   @Autowired
   LanguageAiComponent languageAiComponent;
-  @Scheduled( fixedRate = 60000)
-  public void cleanData(){
-    dataTrainingService.clearDuplicateData();
-  }
 
   @Scheduled( fixedRate = 100000)
   public void updateModule() throws IOException {

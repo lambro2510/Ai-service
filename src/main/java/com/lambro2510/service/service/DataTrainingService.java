@@ -159,11 +159,7 @@ public class DataTrainingService extends BaseService {
 //    }
 
     for (int offset = 0; offset < 50; offset++) {
-      int finalOffset = offset;
-      Thread thread = new Thread(() -> {
-        getFeed(finalOffset);
-      });
-      thread.start();
+      getFeed(offset);
     }
   }
 
@@ -173,14 +169,9 @@ public class DataTrainingService extends BaseService {
     if (shoppeeItems.getData().getFeeds() == null || shoppeeItems.getData().getFeeds().isEmpty()) {
       return;
     }
-    int rateOffset = 0;
-    for (ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()) {
-      Thread thread = new Thread(() -> {
-        getRating(feed, rateOffset);
-      });
-      thread.start();
 
-      if (offset > 10000) break;
+    for (ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()) {
+      getRating(feed, 0);
     }
     getFeed(++offset);
   }
