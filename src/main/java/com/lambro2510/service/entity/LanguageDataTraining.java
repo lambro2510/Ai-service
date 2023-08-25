@@ -1,5 +1,8 @@
 package com.lambro2510.service.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.deser.std.StringDeserializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.lambro2510.service.Utils.DateUtils;
 import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
@@ -20,6 +23,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Builder
 public class LanguageDataTraining {
   @Id
+  @JsonDeserialize(using = StringDeserializer.class)
   private ObjectId id;
 
   @Field("text")

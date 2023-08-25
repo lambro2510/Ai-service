@@ -42,7 +42,7 @@ public class Helper {
 
   public static List<String> splitTextIntoSentences(String text) {
     List<String> sentences = new ArrayList<>();
-    String[] sentenceTokens = text.split("[.,]");
+    String[] sentenceTokens = text.split("[.,!\n;?]");
     for (String sentence : sentenceTokens) {
       String trimmedSentence = sentence.trim();
       if (!trimmedSentence.isEmpty()) {

@@ -12,8 +12,10 @@ import com.lambro2510.service.factory.LanguageAiComponent;
 import com.lambro2510.service.response.ApiResponse.ShopeeItemResponse;
 import com.lambro2510.service.response.ApiResponse.ShoppeeRatingData;
 import com.lambro2510.service.response.LanguageDataResponse;
+import com.lambro2510.service.response.PageResponse;
 import com.mongodb.MongoWriteException;
 import lombok.extern.log4j.Log4j2;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -22,10 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Log4j2
@@ -65,25 +64,30 @@ public class DataTrainingService extends BaseService {
         .build();
   }
 
-  public LanguageDataResponse getStatusOfText(String text) {
+  public List<LanguageDataTraining> getStatusOfText(String text, List<LanguageDataTraining> dataResponses) {
+    if(dataResponses == null){
+      dataResponses = new ArrayList<>();
+    }
     LanguageDataResponse data = languageAiComponent.getStatus(text);
+
     if (data.isCorrect() || data.getPercent() > 0.9) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
+      dataResponses.add(dataTraining);
       try {
         languageDataTrainingRepository.save(dataTraining);
       } catch (Exception ex) {
         log.error(ex.getMessage());
       }
     }
-    trainingSubText(text);
-    return data;
+    trainingSubText(text, dataResponses);
+    return dataResponses;
   }
 
-  public void trainingSubText(String text) {
+  public void trainingSubText(String text, List<LanguageDataTraining> dataResponses) {
     List<String> subTexts = Helper.splitTextIntoSentences(text);
     if (subTexts.size() == 1) return;
     for (String subText : subTexts) {
-      getStatusOfText(subText);
+      getStatusOfText(subText, dataResponses);
     }
   }
 
@@ -214,5 +218,21 @@ public class DataTrainingService extends BaseService {
     TextStatus status = statusMap.get(star);
     if (status == null) throw new RuntimeException("Error");
     return status;
+  }
+
+  public PageResponse getAllDataTraining(String text, Pageable pageable) {
+    if(Objects.isNull(text)){
+      return PageResponse.createFrom(languageDataTrainingRepository.findAll(pageable));
+    }else{
+      return PageResponse.createFrom(languageDataTrainingRepository.findByText(text, pageable));
+
+    }
+  }
+
+  public void updateTrainingDataDetail(String id, TextStatus status, TextTone tone) {
+    LanguageDataTraining languageDataTraining = languageDataTrainingRepository.findById(new ObjectId(id)).get();
+    languageDataTraining.setStatus(status);
+    languageDataTraining.setTone(tone);
+    languageDataTrainingRepository.save(languageDataTraining);
   }
 }
