@@ -11,16 +11,21 @@ import com.lambro2510.service.factory.LanguageAiComponent;
 import com.lambro2510.service.response.ApiResponse.ShopeeItemResponse;
 import com.lambro2510.service.response.ApiResponse.ShoppeeRatingData;
 import com.lambro2510.service.response.LanguageDataResponse;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @Service
+@Log4j2
 public class DataTrainingService extends BaseService{
 
   @Autowired @Lazy LanguageAiComponent languageAiComponent;
@@ -145,26 +150,38 @@ public class DataTrainingService extends BaseService{
     if(shoppeeItems.getData().getFeeds() == null ||shoppeeItems.getData().getFeeds().isEmpty() ){
       return;
     }
-
+    int rateOffset = 0;
     for(ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()){
-      getRating(feed, 0);
+      Thread thread = new Thread(() -> {
+        getRating(feed, rateOffset);
+      });
+      thread.start();
+
+      if(offset > 10000) break;
     }
     getFeed(++offset);
   }
 
   public void getRating(ShopeeItemResponse.Feed feed, int offset){
+    System.out.println(Thread.currentThread().getId());
+    log.info("-----");
     ShoppeeRatingData shoppeeRatingData = RequestUtils.getRatingData(feed.getItemCard().getItem().getItemid(),feed.getItemCard().getItem().getShopid(), offset);
-
     if(shoppeeRatingData.getData().getRatings() == null || shoppeeRatingData.getData().getRatings().isEmpty()){
       return;
     }
+    List<LanguageDataTraining> data = new ArrayList<>();
     for(ShoppeeRatingData.RatingData.Rating rating : shoppeeRatingData.getData().getRatings()){
       String comment = rating.getComment();
       TextStatus status = getStatus(rating.getRatingStar());
       LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
-      languageDataTrainingRepository.save(languageDataTraining);
+      data.add(languageDataTraining);
     }
-    getRating(feed, ++offset);
+    languageDataTrainingRepository.saveAll(data);
+  }
+
+  @Async("threadPoolGetRating")
+  public void updateRatingAsyncAndSaveToDb(ShopeeItemResponse.Feed feed, int offset){
+
   }
 
   public TextStatus getStatus(Integer star){
