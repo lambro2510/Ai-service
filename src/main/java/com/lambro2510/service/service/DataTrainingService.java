@@ -184,18 +184,22 @@ public class DataTrainingService extends BaseService{
   }
 
   public void getRating(ShopeeItemResponse.Feed feed, int offset){
-    ShoppeeRatingData shoppeeRatingData = RequestUtils.getRatingData(feed.getItemCard().getItem().getItemid(),feed.getItemCard().getItem().getShopid(), offset);
-    if(shoppeeRatingData.getData().getRatings() == null || shoppeeRatingData.getData().getRatings().isEmpty()){
-      return;
+    try{
+      ShoppeeRatingData shoppeeRatingData = RequestUtils.getRatingData(feed.getItemCard().getItem().getItemid(),feed.getItemCard().getItem().getShopid(), offset);
+      if(shoppeeRatingData.getData().getRatings() == null || shoppeeRatingData.getData().getRatings().isEmpty()){
+        return;
+      }
+      List<LanguageDataTraining> data = new ArrayList<>();
+      for(ShoppeeRatingData.RatingData.Rating rating : shoppeeRatingData.getData().getRatings()){
+        String comment = rating.getComment();
+        TextStatus status = getStatus(rating.getRatingStar());
+        LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
+        data.add(languageDataTraining);
+      }
+      languageDataTrainingRepository.saveAll(data);
+    }catch (Exception ex){
+      log.error(ex);
     }
-    List<LanguageDataTraining> data = new ArrayList<>();
-    for(ShoppeeRatingData.RatingData.Rating rating : shoppeeRatingData.getData().getRatings()){
-      String comment = rating.getComment();
-      TextStatus status = getStatus(rating.getRatingStar());
-      LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
-      data.add(languageDataTraining);
-    }
-    languageDataTrainingRepository.saveAll(data);
   }
 
   @Async("threadPoolGetRating")
