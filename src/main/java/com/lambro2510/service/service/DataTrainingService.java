@@ -13,6 +13,7 @@ import com.lambro2510.service.response.ApiResponse.ShoppeeRatingData;
 import com.lambro2510.service.response.LanguageDataResponse;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ import java.util.concurrent.ExecutionException;
 @Service
 @Log4j2
 public class DataTrainingService extends BaseService{
+
+  @Value("${data.async}")
+  private boolean asyncData;
 
   @Autowired @Lazy LanguageAiComponent languageAiComponent;
   public void createLanguageDataTraining(List<CreateLanguageDataTrainingDto> dto){
@@ -141,6 +145,9 @@ public class DataTrainingService extends BaseService{
   }
 
   public void autoTraining() {
+    if(!asyncData){
+      return;
+    }
     getFeed(0);
   }
 

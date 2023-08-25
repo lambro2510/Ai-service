@@ -30,3 +30,6 @@ logging:
 server:
   port: ${PORT:8080}
 
+data:
+  async: ${ASYNC_DATA:false}
+
