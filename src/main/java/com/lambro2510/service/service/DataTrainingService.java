@@ -197,7 +197,6 @@ public class DataTrainingService extends BaseService {
         TextStatus status = getStatus(rating.getRatingStar());
         LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
         languageDataTrainingRepository.save(languageDataTraining);
-
       } catch (Exception ex) {
         log.error(ex);
       }
@@ -205,10 +204,6 @@ public class DataTrainingService extends BaseService {
 
   }
 
-  @Async("threadPoolGetRating")
-  public void updateRatingAsyncAndSaveToDb(ShopeeItemResponse.Feed feed, int offset) {
-
-  }
 
   public TextStatus getStatus(Integer star) {
     Map<Integer, TextStatus> statusMap = new HashMap<>();
