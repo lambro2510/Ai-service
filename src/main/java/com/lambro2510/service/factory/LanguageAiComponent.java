@@ -52,6 +52,10 @@ public class LanguageAiComponent {
       String category = dataTraining.getStatus().toString();
       Map<String, Object> extraInformation = new HashMap<>();
       extraInformation.put("percent", dataTraining.getPercent());
+      extraInformation.put("status", dataTraining.getStatus());
+      extraInformation.put("accurate", dataTraining.getAccurate());
+      extraInformation.put("type", dataTraining.getType());
+      extraInformation.put("tone", dataTraining.getTone());
       DocumentSample sample = new DocumentSample(category, text, extraInformation);
       documentSamples.add(sample);
     }
