@@ -50,7 +50,7 @@ public class LanguageDataTraining {
 
   public LanguageDataResponse partnerToResponse(){
     LanguageDataResponse response = new LanguageDataResponse();
-    response.setId(id.toHexString());
+    response.setId(id == null ? null : id.toHexString());
     response.setText(text);
     response.setDescription(status.getDescription());
     response.setStatus(status);
