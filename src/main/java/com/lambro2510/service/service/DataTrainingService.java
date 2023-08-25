@@ -67,14 +67,14 @@ public class DataTrainingService extends BaseService {
 
   public LanguageDataResponse getStatusOfText(String text) {
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-//    if (data.isCorrect() || data.getPercent() > 0.9) {
-//      LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
-//      try {
-//        languageDataTrainingRepository.save(dataTraining);
-//      } catch (Exception ex) {
-//        log.error(ex.getMessage());
-//      }
-//    }
+    if (data.isCorrect() || data.getPercent() > 0.9) {
+      LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "all", TextTone.NORMAL);
+      try {
+        languageDataTrainingRepository.save(dataTraining);
+      } catch (Exception ex) {
+        log.error(ex.getMessage());
+      }
+    }
     trainingSubText(text);
     return data;
   }
