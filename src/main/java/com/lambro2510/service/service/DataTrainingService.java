@@ -166,9 +166,9 @@ public class DataTrainingService extends BaseService {
   }
 
   public void autoTraining() {
-//    if(!asyncData){
-//      return;
-//    }
+    if(!asyncData){
+      return;
+    }
 
     for (int offset = 0; offset < 50; offset++) {
       getFeed(offset);
@@ -198,8 +198,8 @@ public class DataTrainingService extends BaseService {
       try {
         String comment = rating.getComment();
         TextStatus status = getStatus(rating.getRatingStar());
-//        LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
-//        languageDataTrainingRepository.save(languageDataTraining);
+        LanguageDataTraining languageDataTraining = createData(comment, status, 1D, "ALL", TextTone.NORMAL);
+        languageDataTrainingRepository.save(languageDataTraining);
       } catch (Exception ex) {
         log.error(ex);
       }
