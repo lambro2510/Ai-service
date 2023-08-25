@@ -11,6 +11,7 @@ public enum TextTone {
   SARCASTIC("Chế nhạo"),
   EXCITED("Hào hứng"),
   SAD("Buồn bã"),
+  NEUTRAL("Trung lập"),
   CONFUSED("Lúng túng"),
   HAPPY("Hạnh phúc"),
   CALM("Bình tĩnh"),
