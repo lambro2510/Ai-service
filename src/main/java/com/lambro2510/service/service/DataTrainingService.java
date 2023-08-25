@@ -15,6 +15,8 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -40,8 +42,9 @@ public class DataTrainingService extends BaseService{
     }
   }
 
-  public List<LanguageDataTraining> getAllTrainingData(){
-    return languageDataTrainingRepository.findAll();
+  public List<LanguageDataTraining> getAllTrainingData(int limit){
+    Pageable pageable = PageRequest.of(0, limit);
+    return languageDataTrainingRepository.findAll(pageable).getContent();
   }
   private LanguageDataTraining createData(String text, TextStatus status, Double percent){
     return LanguageDataTraining.builder()

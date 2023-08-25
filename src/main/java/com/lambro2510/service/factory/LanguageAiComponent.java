@@ -44,7 +44,7 @@ public class LanguageAiComponent {
   }
 
   public DocumentCategorizerME createModule() throws IOException {
-    List<LanguageDataTraining> dataTrainings = dataTrainingService.getAllTrainingData();
+    List<LanguageDataTraining> dataTrainings = dataTrainingService.getAllTrainingData(200);
     List<DocumentSample> documentSamples = new ArrayList<>();
 
     for (LanguageDataTraining dataTraining : dataTrainings) {
