@@ -24,29 +24,31 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 @Service
 @Log4j2
-public class DataTrainingService extends BaseService{
+public class DataTrainingService extends BaseService {
 
   @Value("${data.async}")
   private boolean asyncData;
 
-  @Autowired @Lazy LanguageAiComponent languageAiComponent;
-  public void createLanguageDataTraining(List<CreateLanguageDataTrainingDto> dto){
-    for(CreateLanguageDataTrainingDto trainingDto : dto){
+  @Autowired
+  @Lazy
+  LanguageAiComponent languageAiComponent;
+
+  public void createLanguageDataTraining(List<CreateLanguageDataTrainingDto> dto) {
+    for (CreateLanguageDataTrainingDto trainingDto : dto) {
       LanguageDataTraining dataTraining = createData(trainingDto.getText(), trainingDto.getStatus(), trainingDto.getPercent());
       languageDataTrainingRepository.save(dataTraining);
     }
   }
 
-  public List<LanguageDataTraining> getAllTrainingData(int limit){
+  public List<LanguageDataTraining> getAllTrainingData(int limit) {
     Pageable pageable = PageRequest.of(0, limit);
     return languageDataTrainingRepository.findAll(pageable).getContent();
   }
-  private LanguageDataTraining createData(String text, TextStatus status, Double percent){
+
+  private LanguageDataTraining createData(String text, TextStatus status, Double percent) {
     return LanguageDataTraining.builder()
         .text(text)
         .status(status)
@@ -57,11 +59,11 @@ public class DataTrainingService extends BaseService{
 
   public LanguageDataResponse getStatusOfText(String text) {
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-    if(data.isCorrect() || data.getPercent() > 0.9){
+    if (data.isCorrect() || data.getPercent() > 0.9) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
-      try{
+      try {
         languageDataTrainingRepository.save(dataTraining);
-      }catch (Exception ex){
+      } catch (Exception ex) {
         log.error(ex.getMessage());
       }
     }
@@ -69,17 +71,17 @@ public class DataTrainingService extends BaseService{
     return data;
   }
 
-  public void trainingSubText(String text){
+  public void trainingSubText(String text) {
     List<String> subTexts = Helper.splitTextIntoSentences(text);
-    if(subTexts.size() == 1) return;
-    for(String subText : subTexts){
+    if (subTexts.size() == 1) return;
+    for (String subText : subTexts) {
       getStatusOfText(subText);
     }
   }
 
   public void updateTrainingData() {
-    List<LanguageDataTraining> dataTrainings =  languageDataTrainingRepository.findAll();
-    for(LanguageDataTraining dataTraining : dataTrainings){
+    List<LanguageDataTraining> dataTrainings = languageDataTrainingRepository.findAll();
+    for (LanguageDataTraining dataTraining : dataTrainings) {
       dataTraining.setPercent(1D);
       dataTraining.setCreatedAt(DateUtils.getNow());
     }
@@ -87,8 +89,8 @@ public class DataTrainingService extends BaseService{
   }
 
   public void updateAccurateTrainingData() {
-    List<LanguageDataTraining> dataTrainings =  languageDataTrainingRepository.findAll();
-    for(LanguageDataTraining dataTraining : dataTrainings){
+    List<LanguageDataTraining> dataTrainings = languageDataTrainingRepository.findAll();
+    for (LanguageDataTraining dataTraining : dataTrainings) {
       checkTextAccurate(dataTraining);
     }
     languageDataTrainingRepository.saveAll(dataTrainings);
@@ -124,7 +126,7 @@ public class DataTrainingService extends BaseService{
     }
   }
 
-  public void checkTextAccurate(LanguageDataTraining dataTraining){
+  public void checkTextAccurate(LanguageDataTraining dataTraining) {
     Double percent = dataTraining.getPercent();
     if (percent <= 1.0 && percent > 0.9) {
       dataTraining.setAccurate(TextAccurate.PER100);
@@ -156,7 +158,7 @@ public class DataTrainingService extends BaseService{
 //      return;
 //    }
 
-    for(int offset = 0; offset < 50; offset++){
+    for (int offset = 0; offset < 50; offset++) {
       int finalOffset = offset;
       Thread thread = new Thread(() -> {
         getFeed(finalOffset);
@@ -165,49 +167,50 @@ public class DataTrainingService extends BaseService{
     }
   }
 
-  public void getFeed(int offset){
+  public void getFeed(int offset) {
     ShopeeItemResponse shoppeeItems = RequestUtils.getShoppeeItem(offset);
 
-    if(shoppeeItems.getData().getFeeds() == null ||shoppeeItems.getData().getFeeds().isEmpty() ){
+    if (shoppeeItems.getData().getFeeds() == null || shoppeeItems.getData().getFeeds().isEmpty()) {
       return;
     }
     int rateOffset = 0;
-    for(ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()){
+    for (ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()) {
       Thread thread = new Thread(() -> {
         getRating(feed, rateOffset);
       });
       thread.start();
 
-      if(offset > 10000) break;
+      if (offset > 10000) break;
     }
     getFeed(++offset);
   }
 
-  public void getRating(ShopeeItemResponse.Feed feed, int offset){
-    try{
-      ShoppeeRatingData shoppeeRatingData = RequestUtils.getRatingData(feed.getItemCard().getItem().getItemid(),feed.getItemCard().getItem().getShopid(), offset);
-      if(shoppeeRatingData.getData().getRatings() == null || shoppeeRatingData.getData().getRatings().isEmpty()){
-        return;
-      }
-      List<LanguageDataTraining> data = new ArrayList<>();
-      for(ShoppeeRatingData.RatingData.Rating rating : shoppeeRatingData.getData().getRatings()){
+  public void getRating(ShopeeItemResponse.Feed feed, int offset) {
+
+    ShoppeeRatingData shoppeeRatingData = RequestUtils.getRatingData(feed.getItemCard().getItem().getItemid(), feed.getItemCard().getItem().getShopid(), offset);
+    if (shoppeeRatingData.getData().getRatings() == null || shoppeeRatingData.getData().getRatings().isEmpty()) {
+      return;
+    }
+    for (ShoppeeRatingData.RatingData.Rating rating : shoppeeRatingData.getData().getRatings()) {
+      try {
         String comment = rating.getComment();
         TextStatus status = getStatus(rating.getRatingStar());
         LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
-        data.add(languageDataTraining);
+        languageDataTrainingRepository.save(languageDataTraining);
+
+      } catch (Exception ex) {
+        log.error(ex);
       }
-      languageDataTrainingRepository.saveAll(data);
-    }catch (Exception ex){
-      log.error(ex);
     }
+
   }
 
   @Async("threadPoolGetRating")
-  public void updateRatingAsyncAndSaveToDb(ShopeeItemResponse.Feed feed, int offset){
+  public void updateRatingAsyncAndSaveToDb(ShopeeItemResponse.Feed feed, int offset) {
 
   }
 
-  public TextStatus getStatus(Integer star){
+  public TextStatus getStatus(Integer star) {
     Map<Integer, TextStatus> statusMap = new HashMap<>();
     statusMap.put(1, TextStatus.VERY_POOR);
     statusMap.put(2, TextStatus.POOR);
