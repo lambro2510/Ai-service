@@ -57,9 +57,13 @@ public class DataTrainingService extends BaseService{
 
   public LanguageDataResponse getStatusOfText(String text) {
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-    if(data.isCorrect() || data.getPercent() > 0.5){
+    if(data.isCorrect() || data.getPercent() > 0.9){
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
-      languageDataTrainingRepository.save(dataTraining);
+      try{
+        languageDataTrainingRepository.save(dataTraining);
+      }catch (Exception ex){
+        log.error(ex.getMessage());
+      }
     }
     trainingSubText(text);
     return data;
@@ -148,10 +152,17 @@ public class DataTrainingService extends BaseService{
   }
 
   public void autoTraining() {
-    if(!asyncData){
-      return;
+//    if(!asyncData){
+//      return;
+//    }
+
+    for(int offset = 0; offset < 50; offset++){
+      int finalOffset = offset;
+      Thread thread = new Thread(() -> {
+        getFeed(finalOffset);
+      });
+      thread.start();
     }
-    getFeed(0);
   }
 
   public void getFeed(int offset){
@@ -173,8 +184,6 @@ public class DataTrainingService extends BaseService{
   }
 
   public void getRating(ShopeeItemResponse.Feed feed, int offset){
-    System.out.println(Thread.currentThread().getId());
-    log.info("-----");
     ShoppeeRatingData shoppeeRatingData = RequestUtils.getRatingData(feed.getItemCard().getItem().getItemid(),feed.getItemCard().getItem().getShopid(), offset);
     if(shoppeeRatingData.getData().getRatings() == null || shoppeeRatingData.getData().getRatings().isEmpty()){
       return;
