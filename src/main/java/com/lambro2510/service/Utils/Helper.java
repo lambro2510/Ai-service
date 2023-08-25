@@ -1,30 +1,37 @@
 package com.lambro2510.service.Utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Helper {
   public static boolean isMaxValueOutcome(double[] outcomes, Double percent) {
-    percent = 1 / percent;
     if (outcomes == null || outcomes.length == 0) {
       return false;
     }
 
-    for (int value = 0 ; value < outcomes.length; value ++) {
-      if(value == 0 || value == 1){
-        if(outcomes[value] > outcomes[2] * percent || outcomes[value] > outcomes[3] * percent || outcomes[value] > outcomes[4] * percent){
+    double max = outcomes[0];
+    for (double i : outcomes){
+      if (i > max){
+        max = 1;
+      }
+    }
+
+    for (int value = 0; value < outcomes.length; value++) {
+      if (value == 0 || value == 1) {
+        if (max * percent < outcomes[2] || max * percent < outcomes[3] || max * percent < outcomes[4]) {
           return true;
         }
       }
 
-      if(value == 2 ){
-        if(outcomes[value] > outcomes[0] * percent || outcomes[value] > outcomes[1] * percent || outcomes[value] > outcomes[3] * percent || outcomes[value] > outcomes[4] * percent){
+      if (value == 2) {
+        if (max * percent < outcomes[0] || max * percent < outcomes[1] || max * percent < outcomes[3] || max * percent < outcomes[4]) {
           return true;
         }
       }
 
-      if(value == 3 || value == 4){
-        if(outcomes[value] > outcomes[0] * percent || outcomes[value] > outcomes[1] * percent || outcomes[value] > outcomes[2] * percent || outcomes[value] > outcomes[3] * percent){
+      if (value == 3 || value == 4) {
+        if (max * percent < outcomes[0] || max * percent < outcomes[1] || max * percent < outcomes[2] || max * percent < outcomes[3]) {
           return true;
         }
       }
