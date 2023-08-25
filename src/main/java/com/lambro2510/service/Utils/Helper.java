@@ -13,7 +13,7 @@ public class Helper {
     double max = outcomes[0];
     for (double i : outcomes){
       if (i > max){
-        max = 1;
+        max = i;
       }
     }
 
