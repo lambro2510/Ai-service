@@ -7,6 +7,7 @@ import com.lambro2510.service.dto.LanguageDataTraining.CreateLanguageDataTrainin
 import com.lambro2510.service.entity.LanguageDataTraining;
 import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
+import com.lambro2510.service.entity.types.TextTone;
 import com.lambro2510.service.factory.LanguageAiComponent;
 import com.lambro2510.service.response.ApiResponse.ShopeeItemResponse;
 import com.lambro2510.service.response.ApiResponse.ShoppeeRatingData;
@@ -38,7 +39,7 @@ public class DataTrainingService extends BaseService {
 
   public void createLanguageDataTraining(List<CreateLanguageDataTrainingDto> dto) {
     for (CreateLanguageDataTrainingDto trainingDto : dto) {
-      LanguageDataTraining dataTraining = createData(trainingDto.getText(), trainingDto.getStatus(), trainingDto.getPercent());
+      LanguageDataTraining dataTraining = createData(trainingDto.getText(), trainingDto.getStatus(), trainingDto.getPercent(), trainingDto.getType(), trainingDto.getTone());
       languageDataTrainingRepository.save(dataTraining);
     }
   }
@@ -48,25 +49,27 @@ public class DataTrainingService extends BaseService {
     return languageDataTrainingRepository.findAll(pageable).getContent();
   }
 
-  private LanguageDataTraining createData(String text, TextStatus status, Double percent) {
+  private LanguageDataTraining createData(String text, TextStatus status, Double percent, String type, TextTone tone) {
     return LanguageDataTraining.builder()
         .text(text)
         .status(status)
         .percent(percent)
+        .type(type)
+        .tone(tone)
         .createdAt(DateUtils.getNow())
         .build();
   }
 
   public LanguageDataResponse getStatusOfText(String text) {
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-    if (data.isCorrect() || data.getPercent() > 0.9) {
-      LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
-      try {
-        languageDataTrainingRepository.save(dataTraining);
-      } catch (Exception ex) {
-        log.error(ex.getMessage());
-      }
-    }
+//    if (data.isCorrect() || data.getPercent() > 0.9) {
+//      LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent());
+//      try {
+//        languageDataTrainingRepository.save(dataTraining);
+//      } catch (Exception ex) {
+//        log.error(ex.getMessage());
+//      }
+//    }
     trainingSubText(text);
     return data;
   }
@@ -186,8 +189,8 @@ public class DataTrainingService extends BaseService {
       try {
         String comment = rating.getComment();
         TextStatus status = getStatus(rating.getRatingStar());
-        LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
-        languageDataTrainingRepository.save(languageDataTraining);
+//        LanguageDataTraining languageDataTraining = createData(comment, status, 1D);
+//        languageDataTrainingRepository.save(languageDataTraining);
       } catch (Exception ex) {
         log.error(ex);
       }

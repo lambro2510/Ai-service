@@ -3,6 +3,7 @@ package com.lambro2510.service.entity;
 import com.lambro2510.service.Utils.DateUtils;
 import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
+import com.lambro2510.service.entity.types.TextTone;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,6 +27,12 @@ public class LanguageDataTraining {
 
   @Field("status")
   private TextStatus status;
+
+  @Field("type")
+  private String type;
+
+  @Field("tone")
+  private TextTone tone;
 
   @Field("percent")
   private Double percent;
