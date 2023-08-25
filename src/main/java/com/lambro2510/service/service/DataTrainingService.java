@@ -43,7 +43,7 @@ public class DataTrainingService extends BaseService {
       try{
         LanguageDataTraining dataTraining = createData(trainingDto.getText(), trainingDto.getStatus(), trainingDto.getPercent(), trainingDto.getType(), trainingDto.getTone());
         languageDataTrainingRepository.save(dataTraining);
-      }catch (MongoWriteException ex){
+      }catch (Exception ex){
         log.error(ex.getMessage());
       }
     }
