@@ -64,7 +64,7 @@ public class DataTrainingService extends BaseService {
         .build();
   }
 
-  public List<LanguageDataTraining> getStatusOfText(String text, List<LanguageDataTraining> dataResponses) {
+  public List<LanguageDataResponse> getStatusOfText(String text, List<LanguageDataResponse> dataResponses) {
     if(dataResponses == null){
       dataResponses = new ArrayList<>();
     }
@@ -72,18 +72,20 @@ public class DataTrainingService extends BaseService {
 
     if (data.isCorrect() || data.getPercent() > 0.9) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
-      dataResponses.add(dataTraining);
+      dataResponses.add(dataTraining.partnerToResponse());
       try {
         languageDataTrainingRepository.save(dataTraining);
       } catch (Exception ex) {
         log.error(ex.getMessage());
       }
+    }else{
+      dataResponses.add(data);
     }
     trainingSubText(text, dataResponses);
     return dataResponses;
   }
 
-  public void trainingSubText(String text, List<LanguageDataTraining> dataResponses) {
+  public void trainingSubText(String text, List<LanguageDataResponse> dataResponses) {
     List<String> subTexts = Helper.splitTextIntoSentences(text);
     if (subTexts.size() == 1) return;
     for (String subText : subTexts) {

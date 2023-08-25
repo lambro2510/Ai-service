@@ -7,6 +7,7 @@ import com.lambro2510.service.Utils.DateUtils;
 import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
 import com.lambro2510.service.entity.types.TextTone;
+import com.lambro2510.service.response.LanguageDataResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,4 +47,21 @@ public class LanguageDataTraining {
 
   @Field("created_at")
   private Long createdAt = DateUtils.getNow();
+
+  public LanguageDataResponse partnerToResponse(){
+    LanguageDataResponse response = new LanguageDataResponse();
+    response.setId(id.toHexString());
+    response.setText(text);
+    response.setDescription(status.getDescription());
+    response.setStatus(status);
+    response.setCorrect(true);
+    response.setPercent(percent);
+    return response;
+  }
+
+  public void partnerFromResponse(LanguageDataResponse languageDataResponse){
+    text = languageDataResponse.getText();
+    status = languageDataResponse.getStatus();
+    percent = languageDataResponse.getPercent();
+  }
 }

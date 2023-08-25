@@ -20,8 +20,14 @@ public class LanguageSchedule {
     languageAiComponent.updateModule();
   }
 
+
   @Scheduled(fixedRate = 1000 * 60 * 30)
   public void autoTraining() throws IOException {
     dataTrainingService.autoTraining();
+  }
+
+  @Scheduled(fixedRate = 1000 * 60 * 30)
+  public void clearDuplicateData() throws IOException {
+    dataTrainingService.clearDuplicateData();
   }
 }
