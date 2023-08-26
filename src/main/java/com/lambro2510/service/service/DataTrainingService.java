@@ -91,9 +91,10 @@ public class DataTrainingService extends BaseService {
         update = statistic.addPoor(1);
       }
       try {
-
-          languageDataTrainingRepository.save(dataTraining);
-          statisticRepository.save(statistic);
+          if(update){
+            languageDataTrainingRepository.save(dataTraining);
+            statisticRepository.save(statistic);
+          }
 
       } catch (Exception ex) {
         log.error(ex.getMessage());
