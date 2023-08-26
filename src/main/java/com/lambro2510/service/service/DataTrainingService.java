@@ -205,7 +205,10 @@ public class DataTrainingService extends BaseService {
     }
 
     for (ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()) {
-      getRating(feed, 0);
+      Thread thread = new Thread(() -> {
+        getRating(feed, 0);
+      });
+      thread.start();
     }
     getFeed(++offset);
   }
