@@ -76,16 +76,25 @@ public class DataTrainingService extends BaseService {
       statistic.setKey("language_statistic");
     }
     ObjectId id = new ObjectId();
-    if ((data.isCorrect() || data.getPercent() > 0.9) && statistic.checkStatistic() ) {
+    if ((data.isCorrect() || data.getPercent() > 0.9)) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
       dataTraining.setId(id);
       dataResponses.add(dataTraining.partnerToResponse());
-      if(data.getStatus() == TextStatus.GOOD|| data.getStatus() == TextStatus.VERY_GOOD) statistic.setTotalLanguageGood(statistic.getTotalLanguageGood() + 1);
-      if(data.getStatus() == TextStatus.NORMAL) statistic.setTotalLanguageNormal(statistic.getTotalLanguageNormal() + 1);
-      if(data.getStatus() == TextStatus.POOR|| data.getStatus() == TextStatus.VERY_POOR) statistic.setTotalLanguagePoor(statistic.getTotalLanguagePoor() + 1);
+      boolean update = false;
+      if(data.getStatus() == TextStatus.GOOD|| data.getStatus() == TextStatus.VERY_GOOD) {
+        update = statistic.addGood(1);
+      }
+      if(data.getStatus() == TextStatus.NORMAL) {
+        update = statistic.addNormal(1);
+      }
+      if(data.getStatus() == TextStatus.POOR|| data.getStatus() == TextStatus.VERY_POOR) {
+        update = statistic.addPoor(1);
+      }
       try {
-        languageDataTrainingRepository.save(dataTraining);
-        statisticRepository.save(statistic);
+        if(update){
+          languageDataTrainingRepository.save(dataTraining);
+          statisticRepository.save(statistic);
+        }
       } catch (Exception ex) {
         log.error(ex.getMessage());
       }
@@ -215,7 +224,7 @@ public class DataTrainingService extends BaseService {
         List<LanguageDataResponse> responses = getStatusOfText(comment, dataResponses, false);
         for(LanguageDataResponse response : responses){
             if (status.equals(response.getStatus())){
-              getStatusOfText(comment, new ArrayList<>(), true);
+              getStatusOfText(response.getText(), new ArrayList<>(), true);
             }
         }
       } catch (Exception ex) {

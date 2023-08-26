@@ -23,24 +23,27 @@ public class Statistic {
   @Field("total_language_poor")
   private Long totalLanguagePoor = 0L;
 
-  @JsonIgnore
-  public boolean checkStatistic() {
-    Long[] values = {totalLanguageGood, totalLanguageNormal, totalLanguagePoor};
-    int count = 0;
-    Long max = Long.MIN_VALUE;
-
-    for (Long value : values) {
-      if (value > max) {
-        max = value;
-        count = 1;
-      } else if (value.equals(max)) {
-        count++;
-      }
+  public boolean addGood(long value){
+    if(getTotalLanguageGood() < getTotalLanguageNormal() && getTotalLanguageGood() < getTotalLanguagePoor()){
+      setTotalLanguageGood(getTotalLanguageGood() + value);
+      return true;
     }
-
-    // Nếu có duy nhất một giá trị lớn nhất hoặc tất cả các giá trị bằng nhau, trả về true
-    return count == 1 || count == values.length;
+    return false;
   }
 
+  public boolean addNormal(long value){
+    if(getTotalLanguageNormal() < getTotalLanguageGood() && getTotalLanguageNormal() < getTotalLanguagePoor()){
+      setTotalLanguageGood(getTotalLanguageGood() + value);
+      return true;
+    }
+    return false;
+  }
 
+  public boolean addPoor(long value){
+    if(getTotalLanguagePoor() < getTotalLanguageGood() && getTotalLanguagePoor() < getTotalLanguageNormal()){
+      setTotalLanguageGood(getTotalLanguageGood() + value);
+      return true;
+    }
+    return false;
+  }
 }
