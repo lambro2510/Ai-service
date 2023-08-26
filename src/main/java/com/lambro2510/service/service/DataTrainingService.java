@@ -5,6 +5,7 @@ import com.lambro2510.service.Utils.Helper;
 import com.lambro2510.service.Utils.RequestUtils;
 import com.lambro2510.service.dto.LanguageDataTraining.CreateLanguageDataTrainingDto;
 import com.lambro2510.service.entity.LanguageDataTraining;
+import com.lambro2510.service.entity.Statistic;
 import com.lambro2510.service.entity.types.TextAccurate;
 import com.lambro2510.service.entity.types.TextStatus;
 import com.lambro2510.service.entity.types.TextTone;
@@ -69,13 +70,18 @@ public class DataTrainingService extends BaseService {
       dataResponses = new ArrayList<>();
     }
     LanguageDataResponse data = languageAiComponent.getStatus(text);
+    Statistic statistic  = statisticRepository.findByKey("language_statistic");
     ObjectId id = new ObjectId();
-    if (data.isCorrect() || data.getPercent() > 0.9) {
+    if ((data.isCorrect() || data.getPercent() > 0.9) && statistic.checkStatistic() ) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
       dataTraining.setId(id);
       dataResponses.add(dataTraining.partnerToResponse());
+      if(data.getStatus() == TextStatus.GOOD|| data.getStatus() == TextStatus.VERY_GOOD) statistic.setTotalLanguageGood(statistic.getTotalLanguageGood() + 1);
+      if(data.getStatus() == TextStatus.NORMAL) statistic.setTotalLanguageNormal(statistic.getTotalLanguageNormal() + 1);
+      if(data.getStatus() == TextStatus.POOR|| data.getStatus() == TextStatus.VERY_POOR) statistic.setTotalLanguagePoor(statistic.getTotalLanguagePoor() + 1);
       try {
         languageDataTrainingRepository.save(dataTraining);
+        statisticRepository.save(statistic);
       } catch (Exception ex) {
         log.error(ex.getMessage());
       }
