@@ -65,7 +65,7 @@ public class DataTrainingService extends BaseService {
         .build();
   }
 
-  public List<LanguageDataResponse> getStatusOfText(String text, List<LanguageDataResponse> dataResponses) {
+  public List<LanguageDataResponse> getStatusOfText(String text, List<LanguageDataResponse> dataResponses, boolean isSave) {
     if(dataResponses == null){
       dataResponses = new ArrayList<>();
     }
@@ -91,15 +91,15 @@ public class DataTrainingService extends BaseService {
     }else{
       dataResponses.add(data);
     }
-    trainingSubText(text, dataResponses);
+    trainingSubText(text, dataResponses, isSave);
     return dataResponses;
   }
 
-  public void trainingSubText(String text, List<LanguageDataResponse> dataResponses) {
+  public void trainingSubText(String text, List<LanguageDataResponse> dataResponses, boolean isSave) {
     List<String> subTexts = Helper.splitTextIntoSentences(text);
     if (subTexts.size() == 1) return;
     for (String subText : subTexts) {
-      getStatusOfText(subText, dataResponses);
+      getStatusOfText(subText, dataResponses, isSave);
     }
   }
 
@@ -210,8 +210,13 @@ public class DataTrainingService extends BaseService {
       try {
         String comment = rating.getComment();
         TextStatus status = getStatus(rating.getRatingStar());
-        LanguageDataTraining languageDataTraining = createData(comment, status, 1D, "ALL", TextTone.NORMAL);
-        languageDataTrainingRepository.save(languageDataTraining);
+        List<LanguageDataResponse> dataResponses = new ArrayList<>();
+        List<LanguageDataResponse> responses = getStatusOfText(comment, dataResponses, false);
+        for(LanguageDataResponse response : responses){
+            if (status.equals(response.getStatus())){
+              getStatusOfText(comment, new ArrayList<>(), true);
+            }
+        }
       } catch (Exception ex) {
         log.error(ex);
       }
