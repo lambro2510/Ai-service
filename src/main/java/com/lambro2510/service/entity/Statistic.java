@@ -24,26 +24,28 @@ public class Statistic {
   private Long totalLanguagePoor = 0L;
 
   public boolean addGood(long value){
-    if(getTotalLanguageGood() < getTotalLanguageNormal() && getTotalLanguageGood() < getTotalLanguagePoor()){
-      setTotalLanguageGood(getTotalLanguageGood() + value);
-      return true;
+    if(getTotalLanguageGood() > getTotalLanguageNormal() && getTotalLanguageGood() > getTotalLanguagePoor()){
+      return false;
+
     }
-    return false;
+    setTotalLanguageGood(getTotalLanguageGood() + value);
+    return true;
   }
 
   public boolean addNormal(long value){
-    if(getTotalLanguageNormal() < getTotalLanguageGood() && getTotalLanguageNormal() < getTotalLanguagePoor()){
-      setTotalLanguageGood(getTotalLanguageGood() + value);
-      return true;
+    if(getTotalLanguageNormal() > getTotalLanguageGood() && getTotalLanguageNormal() > getTotalLanguagePoor()){
+      return false;
+
     }
-    return false;
+    setTotalLanguageGood(getTotalLanguageGood() + value);
+    return true;
   }
 
   public boolean addPoor(long value){
-    if(getTotalLanguagePoor() < getTotalLanguageGood() && getTotalLanguagePoor() < getTotalLanguageNormal()){
-      setTotalLanguageGood(getTotalLanguageGood() + value);
-      return true;
+    if(getTotalLanguagePoor() > getTotalLanguageGood() && getTotalLanguagePoor() > getTotalLanguageNormal()){
+      return false;
     }
-    return false;
+    setTotalLanguageGood(getTotalLanguageGood() + value);
+    return true;
   }
 }

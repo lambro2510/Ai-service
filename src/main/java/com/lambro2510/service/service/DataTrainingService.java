@@ -82,7 +82,7 @@ public class DataTrainingService extends BaseService {
       dataResponses.add(dataTraining.partnerToResponse());
       boolean update = false;
       if(data.getStatus() == TextStatus.GOOD|| data.getStatus() == TextStatus.VERY_GOOD) {
-        update = statistic.addGood(1);
+          update = statistic.addGood(1);
       }
       if(data.getStatus() == TextStatus.NORMAL) {
         update = statistic.addNormal(1);
@@ -91,10 +91,10 @@ public class DataTrainingService extends BaseService {
         update = statistic.addPoor(1);
       }
       try {
-        if(update){
+
           languageDataTrainingRepository.save(dataTraining);
           statisticRepository.save(statistic);
-        }
+
       } catch (Exception ex) {
         log.error(ex.getMessage());
       }
@@ -205,10 +205,7 @@ public class DataTrainingService extends BaseService {
     }
 
     for (ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()) {
-      Thread thread = new Thread(() -> {
         getRating(feed, 0);
-      });
-      thread.start();
     }
     getFeed(++offset);
   }
