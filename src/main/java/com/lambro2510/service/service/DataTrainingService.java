@@ -73,6 +73,7 @@ public class DataTrainingService extends BaseService {
     Statistic statistic  = statisticRepository.findByKey("language_statistic");
     if(statistic == null){
       statistic = new Statistic();
+      statistic.setKey("language_statistic");
     }
     ObjectId id = new ObjectId();
     if ((data.isCorrect() || data.getPercent() > 0.9) && statistic.checkStatistic() ) {
