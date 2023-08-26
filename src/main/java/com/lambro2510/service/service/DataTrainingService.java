@@ -71,6 +71,9 @@ public class DataTrainingService extends BaseService {
     }
     LanguageDataResponse data = languageAiComponent.getStatus(text);
     Statistic statistic  = statisticRepository.findByKey("language_statistic");
+    if(statistic == null){
+      statistic = new Statistic();
+    }
     ObjectId id = new ObjectId();
     if ((data.isCorrect() || data.getPercent() > 0.9) && statistic.checkStatistic() ) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
