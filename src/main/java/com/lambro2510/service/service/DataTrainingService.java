@@ -69,9 +69,10 @@ public class DataTrainingService extends BaseService {
       dataResponses = new ArrayList<>();
     }
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-
+    ObjectId id = new ObjectId();
     if (data.isCorrect() || data.getPercent() > 0.9) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
+      dataTraining.setId(id);
       dataResponses.add(dataTraining.partnerToResponse());
       try {
         languageDataTrainingRepository.save(dataTraining);

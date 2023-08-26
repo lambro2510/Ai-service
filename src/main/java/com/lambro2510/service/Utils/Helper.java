@@ -19,19 +19,19 @@ public class Helper {
 
     for (int value = 0; value < outcomes.length; value++) {
       if (value == 0 || value == 1) {
-        if (max * percent < outcomes[2] || max * percent < outcomes[3] || max * percent < outcomes[4]) {
+        if (max * percent > outcomes[2] && max * percent > outcomes[3] && max * percent > outcomes[4]) {
           return true;
         }
       }
 
       if (value == 2) {
-        if (max * percent < outcomes[0] || max * percent < outcomes[1] || max * percent < outcomes[3] || max * percent < outcomes[4]) {
+        if (max * percent > outcomes[0] && max * percent > outcomes[1] && max * percent > outcomes[3] && max * percent > outcomes[4]) {
           return true;
         }
       }
 
       if (value == 3 || value == 4) {
-        if (max * percent < outcomes[0] || max * percent < outcomes[1] || max * percent < outcomes[2] || max * percent < outcomes[3]) {
+        if (max * percent > outcomes[0] && max * percent > outcomes[1] && max * percent > outcomes[2] && max * percent > outcomes[3]) {
           return true;
         }
       }
