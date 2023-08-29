@@ -37,7 +37,7 @@ public class Statistic {
       return false;
 
     }
-    setTotalLanguageGood(getTotalLanguageGood() + value);
+    setTotalLanguageNormal(getTotalLanguageNormal() + value);
     return true;
   }
 
@@ -45,7 +45,7 @@ public class Statistic {
     if(getTotalLanguagePoor() > getTotalLanguageGood() && getTotalLanguagePoor() > getTotalLanguageNormal()){
       return false;
     }
-    setTotalLanguageGood(getTotalLanguageGood() + value);
+    setTotalLanguagePoor(getTotalLanguagePoor() + value);
     return true;
   }
 }
