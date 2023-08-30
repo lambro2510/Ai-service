@@ -76,7 +76,7 @@ public class DataTrainingService extends BaseService {
       statistic.setKey("language_statistic");
     }
     ObjectId id = new ObjectId();
-    if ((data.isCorrect() || data.getPercent() > 0.9)) {
+    if ((data.isCorrect() || data.getPercent() > 0.8)) {
       LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
       dataTraining.setId(id);
       dataResponses.add(dataTraining.partnerToResponse());
