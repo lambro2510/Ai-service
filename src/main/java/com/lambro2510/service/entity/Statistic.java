@@ -24,7 +24,7 @@ public class Statistic {
   private Long totalLanguagePoor = 0L;
 
   public boolean addGood(long value){
-    if(getTotalLanguageGood() > getTotalLanguageNormal() * 0.9 || getTotalLanguageGood() > getTotalLanguagePoor() * 0.9){
+    if(getTotalLanguageGood() > getTotalLanguageNormal() * 1.5 || getTotalLanguageGood() > getTotalLanguagePoor() * 1.5){
       return false;
 
     }
@@ -33,7 +33,7 @@ public class Statistic {
   }
 
   public boolean addNormal(long value){
-    if(getTotalLanguageNormal() > getTotalLanguageGood() * 0.9|| getTotalLanguageNormal() > getTotalLanguagePoor() * 0.9){
+    if(getTotalLanguageNormal() > getTotalLanguageGood() * 1.5|| getTotalLanguageNormal() > getTotalLanguagePoor() * 1.5){
       return false;
 
     }
@@ -42,7 +42,7 @@ public class Statistic {
   }
 
   public boolean addPoor(long value){
-    if(getTotalLanguagePoor() > getTotalLanguageGood() * 0.9|| getTotalLanguagePoor() > getTotalLanguageNormal() * 0.9){
+    if(getTotalLanguagePoor() > getTotalLanguageGood() * 1.5|| getTotalLanguagePoor() > getTotalLanguageNormal() * 1.5){
       return false;
     }
     setTotalLanguagePoor(getTotalLanguagePoor() + value);
