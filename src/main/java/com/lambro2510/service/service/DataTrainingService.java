@@ -17,6 +17,7 @@ import com.lambro2510.service.response.PageResponse;
 import com.mongodb.MongoWriteException;
 import lombok.extern.log4j.Log4j2;
 import org.bson.types.ObjectId;
+import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -24,6 +25,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -66,44 +70,50 @@ public class DataTrainingService extends BaseService {
   }
 
   public List<LanguageDataResponse> getStatusOfText(String text, List<LanguageDataResponse> dataResponses, boolean isSave) {
-    if(dataResponses == null){
+    if (dataResponses == null) {
       dataResponses = new ArrayList<>();
     }
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-    Statistic statistic  = statisticRepository.findByKey("language_statistic");
-    if(statistic == null){
-      statistic = new Statistic();
-      statistic.setKey("language_statistic");
-    }
-    ObjectId id = new ObjectId();
-    if ((data.isCorrect() || data.getPercent() > 0.8)) {
-      LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
-      dataTraining.setId(id);
-      dataResponses.add(dataTraining.partnerToResponse());
-      boolean update = false;
-      if(data.getStatus() == TextStatus.GOOD|| data.getStatus() == TextStatus.VERY_GOOD) {
+    RLock lock = null;
+    try {
+      lock = lockManager.startLockUpdateStatistic();
+      Statistic statistic = statisticRepository.findByKey("language_statistic");
+      if (statistic == null) {
+        statistic = new Statistic();
+        statistic.setKey("language_statistic");
+      }
+      ObjectId id = new ObjectId();
+      if ((data.isCorrect() || data.getPercent() > 0.8)) {
+        LanguageDataTraining dataTraining = createData(text, data.getStatus(), data.getPercent(), "ALL", TextTone.NORMAL);
+        dataTraining.setId(id);
+        dataResponses.add(dataTraining.partnerToResponse());
+        boolean update = false;
+        if (data.getStatus() == TextStatus.GOOD || data.getStatus() == TextStatus.VERY_GOOD) {
           update = statistic.addGood(1);
-      }
-      if(data.getStatus() == TextStatus.NORMAL) {
-        update = statistic.addNormal(1);
-      }
-      if(data.getStatus() == TextStatus.POOR|| data.getStatus() == TextStatus.VERY_POOR) {
-        update = statistic.addPoor(1);
-      }
-      try {
-          if(update){
+        }
+        if (data.getStatus() == TextStatus.NORMAL) {
+          update = statistic.addNormal(1);
+        }
+        if (data.getStatus() == TextStatus.POOR || data.getStatus() == TextStatus.VERY_POOR) {
+          update = statistic.addPoor(1);
+        }
+        try {
+          if (update) {
             languageDataTrainingRepository.save(dataTraining);
             statisticRepository.save(statistic);
           }
 
-      } catch (Exception ex) {
-        log.error(ex.getMessage());
+        } catch (Exception ex) {
+          log.error(ex.getMessage());
+        }
+      } else {
+        dataResponses.add(data);
       }
-    }else{
-      dataResponses.add(data);
+      trainingSubText(text, dataResponses, isSave);
+      return dataResponses;
+    } finally {
+      lockManager.unLock(lock);
     }
-    trainingSubText(text, dataResponses, isSave);
-    return dataResponses;
   }
 
   public void trainingSubText(String text, List<LanguageDataResponse> dataResponses, boolean isSave) {
@@ -206,7 +216,10 @@ public class DataTrainingService extends BaseService {
     }
 
     for (ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()) {
-        getRating(feed, 0);
+        Thread thread = new Thread(() -> {
+          getRating(feed, 0);
+        });
+        thread.start();
     }
     getFeed(++offset);
   }
