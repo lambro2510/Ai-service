@@ -76,7 +76,7 @@ public class DataTrainingService extends BaseService {
     LanguageDataResponse data = languageAiComponent.getStatus(text);
     RLock lock = null;
     try {
-      lock = lockManager.startLockUpdateStatistic();
+//      lock = lockManager.startLockUpdateStatistic();
       Statistic statistic = statisticRepository.findByKey("language_statistic");
       if (statistic == null) {
         statistic = new Statistic();
@@ -112,7 +112,7 @@ public class DataTrainingService extends BaseService {
       trainingSubText(text, dataResponses, isSave);
       return dataResponses;
     } finally {
-      lockManager.unLock(lock);
+//      lockManager.unLock(lock);
     }
   }
 
@@ -216,10 +216,10 @@ public class DataTrainingService extends BaseService {
     }
 
     for (ShopeeItemResponse.Feed feed : shoppeeItems.getData().getFeeds()) {
-        Thread thread = new Thread(() -> {
+//        Thread thread = new Thread(() -> {
           getRating(feed, 0);
-        });
-        thread.start();
+//        });
+//        thread.start();
     }
     getFeed(++offset);
   }
