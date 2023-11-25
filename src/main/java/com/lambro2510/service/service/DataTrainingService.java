@@ -14,10 +14,8 @@ import com.lambro2510.service.response.ApiResponse.ShopeeItemResponse;
 import com.lambro2510.service.response.ApiResponse.ShoppeeRatingData;
 import com.lambro2510.service.response.LanguageDataResponse;
 import com.lambro2510.service.response.PageResponse;
-import com.mongodb.MongoWriteException;
 import lombok.extern.log4j.Log4j2;
 import org.bson.types.ObjectId;
-import org.redisson.api.RLock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
@@ -42,15 +40,16 @@ public class DataTrainingService extends BaseService {
   @Lazy
   LanguageAiComponent languageAiComponent;
 
-  public void createLanguageDataTraining(List<CreateLanguageDataTrainingDto> dto) {
-    for (CreateLanguageDataTrainingDto trainingDto : dto) {
+  public void createLanguageDataTraining(CreateLanguageDataTrainingDto dto) {
       try{
-        LanguageDataTraining dataTraining = createData(trainingDto.getText(), trainingDto.getStatus(), trainingDto.getPercent(), trainingDto.getType(), trainingDto.getTone());
-        languageDataTrainingRepository.save(dataTraining);
+        String[] dataTrain = dto.getText().split(",");
+        for(String text : dataTrain) {
+          LanguageDataTraining dataTraining = createData(text, dto.getStatus(), dto.getPercent(), dto.getType(), dto.getTone());
+          languageDataTrainingRepository.save(dataTraining);
+        }
       }catch (Exception ex){
         log.error(ex.getMessage());
       }
-    }
   }
 
   public List<LanguageDataTraining> getAllTrainingData(int limit) {
@@ -74,9 +73,7 @@ public class DataTrainingService extends BaseService {
       dataResponses = new ArrayList<>();
     }
     LanguageDataResponse data = languageAiComponent.getStatus(text);
-    RLock lock = null;
     try {
-//      lock = lockManager.startLockUpdateStatistic();
       Statistic statistic = statisticRepository.findByKey("language_statistic");
       if (statistic == null) {
         statistic = new Statistic();
@@ -109,7 +106,6 @@ public class DataTrainingService extends BaseService {
       } else {
         dataResponses.add(data);
       }
-      trainingSubText(text, dataResponses, isSave);
       return dataResponses;
     } finally {
 //      lockManager.unLock(lock);

@@ -44,7 +44,7 @@ public class LanguageAiComponent {
   }
 
   public DocumentCategorizerME createModule() throws IOException {
-    List<LanguageDataTraining> dataTrainings = dataTrainingService.getAllTrainingData(200);
+    List<LanguageDataTraining> dataTrainings = dataTrainingService.getAllTrainingData(20000);
     List<DocumentSample> documentSamples = new ArrayList<>();
 
     for (LanguageDataTraining dataTraining : dataTrainings) {
@@ -52,7 +52,7 @@ public class LanguageAiComponent {
       String category = dataTraining.getStatus().toString();
       Map<String, Object> extraInformation = new HashMap<>();
 //      extraInformation.put("percent", dataTraining.getPercent());
-//      extraInformation.put("status", dataTraining.getStatus());
+      extraInformation.put("status", dataTraining.getStatus());
 //      extraInformation.put("accurate", dataTraining.getAccurate());
 //      extraInformation.put("type", dataTraining.getType());
 //      extraInformation.put("tone", dataTraining.getTone());

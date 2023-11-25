@@ -38,7 +38,7 @@ public class LanguageDataTrainingController {
   }
 
   @PostMapping("")
-  public ResponseEntity<Boolean> createData(@RequestBody List<CreateLanguageDataTrainingDto> dto){
+  public ResponseEntity<Boolean> createData(@RequestBody CreateLanguageDataTrainingDto dto){
     dataTrainingService.createLanguageDataTraining(dto);
     return ResponseEntity.ok(true);
   }
