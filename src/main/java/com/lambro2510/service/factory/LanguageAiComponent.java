@@ -5,7 +5,6 @@ import com.lambro2510.service.entity.LanguageDataTraining;
 import com.lambro2510.service.entity.types.TextStatus;
 import com.lambro2510.service.response.LanguageDataResponse;
 import com.lambro2510.service.service.DataTrainingService;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.log4j.Log4j2;
 import opennlp.tools.doccat.DoccatFactory;
 import opennlp.tools.doccat.DoccatModel;

@@ -44,8 +44,12 @@ public class LanguageDataTrainingController {
   }
 
   @GetMapping("status")
-  public ResponseEntity<List<LanguageDataResponse>> getStatusOfText(@RequestParam String text){
-    return ResponseEntity.ok(dataTrainingService.getStatusOfText(text, null, true));
+  public ResponseEntity<?> getStatusOfText(@RequestParam String text){
+    try{
+      return ResponseEntity.ok(dataTrainingService.getStatusOfText(text, null, false));
+    }catch (Exception ex){
+      return ResponseEntity.ok(ex.getMessage());
+    }
   }
 
   @GetMapping("")

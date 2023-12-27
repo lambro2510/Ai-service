@@ -1,0 +1,17 @@
+
+_
+java:S6813"BRemove this field injection and use constructor injection instead.(Šé³Å8â¡³áÊ1
+T
+java:S68633"2Set a HttpStatus code reflective of the operation.(ËøÑ–ùÿÿÿÿ8ã¡³áÊ1
+H
+java:S1452/"&Remove usage of generic wildcard type.(­®ˆüÿÿÿÿ8æ¡³áÊ1
+H
+java:S14528"&Remove usage of generic wildcard type.(ùÿ¢Ëÿÿÿÿÿ8ç¡³áÊ1
+H
+java:S1452?"&Remove usage of generic wildcard type.(şØ±êúÿÿÿÿ8ç¡³áÊ1
+l
+java:S1128"ORemove this unused import 'com.lambro2510.service.entity.LanguageDataTraining'.(Àçèä8è¡³áÊ1
+n
+java:S1128"QRemove this unused import 'com.lambro2510.service.response.LanguageDataResponse'.(¶ÛÙ 8è¡³áÊ1
+M
+java:S1128"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8è¡³áÊ1

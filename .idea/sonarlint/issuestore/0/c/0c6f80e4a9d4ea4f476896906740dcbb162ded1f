@@ -1,0 +1,31 @@
+
+\	java:S112ü"FDefine and throw a dedicated exception instead of using a generic one.(£”ßƒ
+R
+java:S3740€"/Provide the parametrized type for this generic.(õ¶Ý¯ûÿÿÿÿ8Ô€­áÊ1
+s
+java:S3655Š"PCall "Optional#isPresent()" or "!Optional#isEmpty()" before accessing the value.(¹á²¿ùÿÿÿÿ8ê„­áÊ1
+X
+java:S6813'"BRemove this field injection and use constructor injection instead.(êæÄÞ
+g
+java:S3776G"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(®´Œr
+I
+java:S1172G"-Remove this unused method parameter "isSave".(®´Œr8ó„­áÊ1
+n
+java:S3776ˆ"RRefactor this method to reduce its Cognitive Complexity from 17 to the 15 allowed.(À—ýœúÿÿÿÿ
+i
+java:S3776¦"RRefactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.(ºßÛ´
+W	java:S125Ó"<This block of commented-out lines of code should be removed.(Í¨÷ùÿÿÿÿ
+W	java:S125Õ"<This block of commented-out lines of code should be removed.(×§ŠÕüÿÿÿÿ
+X
+java:S1854ã";Remove this useless assignment to local variable "comment".(Öˆê48Æ¥´áÊ1
+]
+java:S1854ä":Remove this useless assignment to local variable "status".(Áä¡¦ÿÿÿÿÿ8Ž¾´áÊ1
+d
+java:S1854å"ARemove this useless assignment to local variable "dataResponses".(‰’Ä£ÿÿÿÿÿ8Æ¥´áÊ1
+I
+java:S1481ã",Remove this unused "comment" local variable.(Öˆê48È¥´áÊ1
+N
+java:S1481ä"+Remove this unused "status" local variable.(Áä¡¦ÿÿÿÿÿ8¾´áÊ1
+U
+java:S1481å"2Remove this unused "dataResponses" local variable.(‰’Ä£ÿÿÿÿÿ8È¥´áÊ1
+Y	java:S125æ"<This block of commented-out lines of code should be removed.(››Ñ8È¥´áÊ1
